@@ -97,6 +97,30 @@
 	    });
 	*/
 
+	$(window).resize(function() {
+
+	    if($( window ).width() <= 754 ) {
+
+		// Refactor
+		if($('#navbar .navbar-header h1 a').text() != 'DSS') {
+
+		    $(document).data('Drupal.theme.bootstrap.dss', $('#navbar .navbar-header h1 a').text());
+		    $('#navbar .navbar-header h1 a').text('DSS');
+		}
+
+		$('header#navbar').addClass('navbar-static-width');
+	    } else {
+
+		//$(document).data('Drupal.theme.bootstrap.dss', $('#navbar .navbar-header h1 a').text());
+		if($('#navbar .navbar-header h1 a').text() == 'DSS') {
+
+		    $('#navbar .navbar-header h1 a').text( $(document).data('Drupal.theme.bootstrap.dss'));
+		}
+
+		$('header#navbar').removeClass('navbar-static-width');
+	    }
+	});
+
     }
 
     // Ensure that the execution of all bootstrap functionality lies within a modular, Drupal-compliant context

@@ -4,6 +4,18 @@
    *
    */
 
+#islandora-solr-simple-search-form div a,
+#auth-control-container > a,
+#share-control-container > a {
+
+    cursor: pointer;
+}
+
+.modal-body {
+
+    padding: 15px 4px 4px;
+}
+
 div#advanced-search-modal.shown {
 
     top: 152px;
@@ -44,16 +56,33 @@ div#share-modal.shown {
     float: right;
 }
 
+#contact {
+
+    /* margin-left: 33.3%; */
+}
+
 div#contact.shown {
 
     /* top: 164px; */
     top: 0px;
-    left: 0px;
+    /* left: 0px; */
+
+    left: 30%;
 }
 
 div#contact.shown div.modal-dialog div.modal-content div.modal-body section#block-nodeblock-2.block div#node-2.node div.content form#webform-client-form-2.webform-client-form div div#webform-component-message.form-item div.form-textarea-wrapper textarea#edit-submitted-message.form-textarea {
 
     height: 56px;
+}
+
+#share-modal.lafayette-dss-modal div.popover div.arrow:after {
+
+    left: 30px;
+}
+
+#share-modal.lafayette-dss-modal div.popover div.arrow {
+
+    border-bottom-color: transparent;
 }
 
 /**
@@ -86,13 +115,21 @@ div#contact.shown div.modal-dialog div.modal-content div.modal-body section#bloc
 
 .modal-contact-body {
 
-    max-height: none;
+    /* max-height: none; */
+    max-height: 186px;
 }
 
+.popover.bottom.in {
+
+    z-index:10000;
+}
+
+/*
 .popover.bottom .arrow {
 
     left: 86%;
 }
+*/
 
 .close {
 
