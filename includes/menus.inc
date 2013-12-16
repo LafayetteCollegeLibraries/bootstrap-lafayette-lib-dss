@@ -5,7 +5,7 @@
  * Theming for menu trees, menu items, and menu links
  */
 
-function bootstrap_lafayette_lib_dss_menu_link__main_menu(&$variables) {
+function bootstrap_dss_digital_menu_link__main_menu(&$variables) {
 
   $element = $variables['element'];
   $sub_menu = '';
@@ -60,7 +60,7 @@ function bootstrap_lafayette_lib_dss_menu_link__main_menu(&$variables) {
  return '<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>\n";
   }
 
-function bootstrap_lafayette_lib_dss_menu_tree__menu_footer_menu(&$variables) {
+function bootstrap_dss_digital_menu_tree__menu_footer_menu(&$variables) {
 
   //dpm($variables);
 
@@ -72,7 +72,7 @@ function bootstrap_lafayette_lib_dss_menu_tree__menu_footer_menu(&$variables) {
  *
  * @see https://drupal.org/node/345624
  */
-function bootstrap_lafayette_lib_dss_menu_link__menu_footer_menu(&$variables) {
+function bootstrap_dss_digital_menu_link__menu_footer_menu(&$variables) {
 
   $variables['element']['#attributes']['class'][] = 'footer-menu-item';
 
@@ -92,7 +92,7 @@ function bootstrap_lafayette_lib_dss_menu_link__menu_footer_menu(&$variables) {
  * Implements template_preprocess_menu_tree()
  *
  */
-function bootstrap_lafayette_lib_dss_preprocess_menu_link(&$variables) {
+function bootstrap_dss_digital_preprocess_menu_link(&$variables) {
 
   //dpm($variables);
 }

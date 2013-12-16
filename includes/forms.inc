@@ -13,7 +13,7 @@
  * Theming for the advanced search form must be implemented using a hook which does not conflict with the actual form implementation within the global context
  *
  */
-function bootstrap_lafayette_lib_dss_form_alter(&$form, $form_state, $form_id) {
+function bootstrap_dss_digital_form_alter(&$form, $form_state, $form_id) {
 
   switch($form_id) {
 
@@ -31,7 +31,7 @@ function bootstrap_lafayette_lib_dss_form_alter(&$form, $form_state, $form_id) {
   case 'islandora_solr_advanced_search_form':
 
     // Push/append a theming callback on to the array of theming callbacks for the individual form element
-    $form['#theme'] = array('bootstrap_lafayette_lib_dss_islandora_solr_advanced_search_form');
+    $form['#theme'] = array('bootstrap_dss_digital_islandora_solr_advanced_search_form');
     break;
 
   case 'islandora_solr_simple_search_form':
@@ -70,7 +70,7 @@ function bootstrap_lafayette_lib_dss_form_alter(&$form, $form_state, $form_id) {
  *
  * @see islandora-solr-advanced-search-form.tpl.php
  */
-function bootstrap_lafayette_lib_dss_preprocess_bootstrap_lafayette_lib_dss_islandora_solr_advanced_search_form(&$variables) {
+function bootstrap_dss_digital_preprocess_bootstrap_lafayette_lib_dss_islandora_solr_advanced_search_form(&$variables) {
 
   //$form = $variables['form'];
 
@@ -84,7 +84,7 @@ function bootstrap_lafayette_lib_dss_preprocess_bootstrap_lafayette_lib_dss_isla
       $value['add']['#value'] = '<span class="icon-large icon-plus-sign"></span>';
       /*
 	$value['add']['#value'] = '<span class="icon-large icon-plus-sign"></span>';
-	$value['add']['#ajax']['callback'] = '_bootstrap_lafayette_lib_dss_islandora_solr_advanced_search_terms';
+	$value['add']['#ajax']['callback'] = '_bootstrap_dss_digital_islandora_solr_advanced_search_terms';
 
 	$value['search']['#value'] = '';
 	//dpm($value);

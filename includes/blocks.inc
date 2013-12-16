@@ -20,7 +20,7 @@
    * @return string
    */
 
-function bootstrap_lafayette_lib_dss_islandora_solr_advanced_search_form($form, &$form_state) {
+function bootstrap_dss_digital_islandora_solr_advanced_search_form($form, &$form_state) {
   drupal_add_library('system', 'ui.tabs');
 
   global $_islandora_solr_queryclass;
@@ -281,14 +281,14 @@ function bootstrap_lafayette_lib_dss_islandora_solr_advanced_search_form($form, 
  * Implements hook_block_view_MODULE_DELTA_alter(&$data, $block).
  *
  */
-function bootstrap_lafayette_lib_dss_block_view_islandora_solr_advanced_alter(&$data, $block) {
+function bootstrap_dss_digital_block_view_islandora_solr_advanced_alter(&$data, $block) {
 
   foreach($data['content']['terms'] as $key => &$value) {
 
     if(is_numeric($key)) {
 
       $value['add']['#value'] = '<i class="icon-large icon-plus-sign"></i>';
-      $value['add']['#ajax']['callback'] = '_bootstrap_lafayette_lib_dss_islandora_solr_advanced_search_terms';
+      $value['add']['#ajax']['callback'] = '_bootstrap_dss_digital_islandora_solr_advanced_search_terms';
 
       $value['search']['#value'] = '';
     }
@@ -303,7 +303,7 @@ function bootstrap_lafayette_lib_dss_block_view_islandora_solr_advanced_alter(&$
  * @see sharethis_get_button_HTML()
  *
  */
-function _bootstrap_lafayette_lib_dss_sharethis_get_button_HTML($data_options, $mPath, $mTitle) {
+function _bootstrap_dss_digital_sharethis_get_button_HTML($data_options, $mPath, $mTitle) {
 
   // Inject the extra services.
   foreach ($data_options['option_extras'] as $service) {
@@ -390,7 +390,7 @@ function _bootstrap_lafayette_lib_dss_sharethis_get_button_HTML($data_options, $
   }
 
   // This can only be further themed with JavaScript
-  drupal_add_js( drupal_get_path('theme', 'bootstrap_lafayette_lib_dss') . '/js/sharethis_helper.js');
+  drupal_add_js( drupal_get_path('theme', 'bootstrap_dss_digital') . '/js/sharethis_helper.js');
 
   // Provide the publisher ID.
   $stlight = drupal_json_encode(array(
@@ -408,7 +408,7 @@ function _bootstrap_lafayette_lib_dss_sharethis_get_button_HTML($data_options, $
  * @return string
  *
  */
-function _bootstrap_lafayette_lib_dss_sharethis_block_contents() {
+function _bootstrap_dss_digital_sharethis_block_contents() {
 
   if (variable_get('sharethis_location', 'content') == 'block') {
 
@@ -417,7 +417,7 @@ function _bootstrap_lafayette_lib_dss_sharethis_block_contents() {
     $path = isset($_GET['q']) ? $_GET['q'] : '<front>';
     $mPath = url($_GET['q'], array('absolute' => TRUE));
     $mTitle = drupal_get_title();
-    return _bootstrap_lafayette_lib_dss_sharethis_get_button_HTML($data_options, $mPath, $mTitle);
+    return _bootstrap_dss_digital_sharethis_get_button_HTML($data_options, $mPath, $mTitle);
   }
 }
 
@@ -426,12 +426,12 @@ function _bootstrap_lafayette_lib_dss_sharethis_block_contents() {
  * Implements hook_block_view_MODULE_DELTA_alter(&$data, $block).
  *
  */
-function bootstrap_lafayette_lib_dss_block_view_sharethis_sharethis_block_alter(&$data, $block) {
+function bootstrap_dss_digital_block_view_sharethis_sharethis_block_alter(&$data, $block) {
 
-  $data['content'] = _bootstrap_lafayette_lib_dss_sharethis_block_contents();
+  $data['content'] = _bootstrap_dss_digital_sharethis_block_contents();
 }
 
-function bootstrap_lafayette_lib_dss_block_view_islandora_solr_simple_alter(&$data, $block) {
+function bootstrap_dss_digital_block_view_islandora_solr_simple_alter(&$data, $block) {
 
   // Magic constants for width and height
   // Must refactor this

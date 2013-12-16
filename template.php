@@ -19,7 +19,7 @@ require_once dirname(__FILE__) . '/includes/menus.inc';
  * @see page.tpl.php
  */
 
-function bootstrap_lafayette_lib_dss_preprocess_page(&$variables) {
+function bootstrap_dss_digital_preprocess_page(&$variables) {
 
   // Add information about the number of sidebars.
   if (!empty($variables['page']['sidebar_first']) && !empty($variables['page']['sidebar_second'])) {
@@ -64,7 +64,7 @@ function bootstrap_lafayette_lib_dss_preprocess_page(&$variables) {
   // The "Log In" link
   //$variables['auth_anchor'] = l(t('Log In'), '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
   /*
-  $variables['auth_anchor'] = l('<div class="auth-icon"><img src="/sites/all/themes/bootstrap_lafayette_lib_dss/files/UserIcon.png" /><span>Log In</span></div>', '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
+  $variables['auth_anchor'] = l('<div class="auth-icon"><img src="/sites/all/themes/bootstrap_dss_digital/files/UserIcon.png" /><span>Log In</span></div>', '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
 														    'data-target' => '#auth-modal',
 																								  'data-width-offset' => '10px',
 														    'data-height-offset' => '28px'),
@@ -75,7 +75,7 @@ function bootstrap_lafayette_lib_dss_preprocess_page(&$variables) {
 											      ));
   */
 
-  $variables['auth_anchor'] = '<a data-toggle="lafayette-dss-modal" data-target="#auth-modal" data-width-offset="0px" data-height-offset="30px"><div class="auth-icon"><img src="/sites/all/themes/bootstrap_lafayette_lib_dss/files/UserIcon.png" /><span>Log In</span></div></a>';
+  $variables['auth_anchor'] = '<a data-toggle="lafayette-dss-modal" data-target="#auth-modal" data-width-offset="0px" data-height-offset="30px"><div class="auth-icon"><img src="/sites/all/themes/bootstrap_dss_digital/files/UserIcon.png" /><span>Log In</span></div></a>';
 
   // The "Log Out" link
   $variables['logout_anchor'] = l(t('Log Out'), 'user/logout');
@@ -83,7 +83,7 @@ function bootstrap_lafayette_lib_dss_preprocess_page(&$variables) {
   // The "Share" link
   //$variables['share_anchor'] = l(t('Share'), '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
   /*
-  $variables['share_anchor'] = l('<div class="share-icon"><img src="/sites/all/themes/bootstrap_lafayette_lib_dss/files/ShareIcon.png" /><span>Share</span></div>', '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
+  $variables['share_anchor'] = l('<div class="share-icon"><img src="/sites/all/themes/bootstrap_dss_digital/files/ShareIcon.png" /><span>Share</span></div>', '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
 									     'data-target' => '#share-modal',
 																								    'data-width-offset' => '10px',
 									     'data-height-offset' => '28px'
@@ -95,7 +95,7 @@ function bootstrap_lafayette_lib_dss_preprocess_page(&$variables) {
 						       ));
   */
 
-  $variables['share_anchor'] = '<a data-toggle="lafayette-dss-modal" data-target="#share-modal" data-width-offset="10px" data-height-offset="28px"><div class="share-icon"><img src="/sites/all/themes/bootstrap_lafayette_lib_dss/files/ShareIcon.png" /><span>Share</span></div></a>';
+  $variables['share_anchor'] = '<a data-toggle="lafayette-dss-modal" data-target="#share-modal" data-width-offset="10px" data-height-offset="28px"><div class="share-icon"><img src="/sites/all/themes/bootstrap_dss_digital/files/ShareIcon.png" /><span>Share</span></div></a>';
 
   // Render thumbnails for authenticated users
   // By default, use a glyphicon
@@ -116,7 +116,7 @@ function bootstrap_lafayette_lib_dss_preprocess_page(&$variables) {
   }
 
   // Work-around for the logo image
-  $variables['dss_logo_image'] = theme_image(array('path' => drupal_get_path('theme', 'bootstrap_lafayette_lib_dss') . '/files/dss_logo.png',
+  $variables['dss_logo_image'] = theme_image(array('path' => drupal_get_path('theme', 'bootstrap_dss_digital') . '/files/dss_logo.png',
 						   'alt' => t('digital scholarship services logo'),
 						   'attributes' => array()));
 
@@ -127,7 +127,7 @@ function bootstrap_lafayette_lib_dss_preprocess_page(&$variables) {
  * @griffinj
  *
  */
-function bootstrap_lafayette_lib_dss_preprocess_hybridauth_widget(&$vars) {
+function bootstrap_dss_digital_preprocess_hybridauth_widget(&$vars) {
 
   // Refactor
   $i = 0;
@@ -146,7 +146,7 @@ function bootstrap_lafayette_lib_dss_preprocess_hybridauth_widget(&$vars) {
  * Implements template_preprocess_html
  *
  */
-function bootstrap_lafayette_lib_dss_preprocess_html(&$variables) {
+function bootstrap_dss_digital_preprocess_html(&$variables) {
 
   drupal_add_library('system', 'effects.drop');
   drupal_add_library('system', 'effects.slide');
@@ -161,7 +161,7 @@ function template_preprocess_hybridauth_widget(&$vars, $hook) {
 }
 */
 
-function bootstrap_lafayette_lib_dss_theme_registry_alter(&$registry) {
+function bootstrap_dss_digital_theme_registry_alter(&$registry) {
 
   $registry['hybridauth_widget']['file'] = 'template';
 }
