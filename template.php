@@ -19,7 +19,7 @@ require_once dirname(__FILE__) . '/includes/menus.inc';
  * @see page.tpl.php
  */
 
-function bootstrap_dss_islandora_dev_preprocess_page(&$variables) {
+function bootstrap_lafayette_lib_dss_preprocess_page(&$variables) {
 
   // Add information about the number of sidebars.
   if (!empty($variables['page']['sidebar_first']) && !empty($variables['page']['sidebar_second'])) {
@@ -98,7 +98,7 @@ function bootstrap_dss_islandora_dev_preprocess_page(&$variables) {
   }
 
   // Work-around for the logo image
-  $variables['dss_logo_image'] = theme_image(array('path' => drupal_get_path('theme', 'bootstrap_dss_islandora_dev') . '/files/dss_logo.png',
+  $variables['dss_logo_image'] = theme_image(array('path' => drupal_get_path('theme', 'bootstrap_lafayette_lib_dss') . '/files/dss_logo.png',
 						   'alt' => t('digital scholarship services logo'),
 						   'attributes' => array()));
 
@@ -109,7 +109,7 @@ function bootstrap_dss_islandora_dev_preprocess_page(&$variables) {
  * @griffinj
  *
  */
-function bootstrap_dss_islandora_dev_preprocess_hybridauth_widget(&$vars) {
+function bootstrap_lafayette_lib_dss_preprocess_hybridauth_widget(&$vars) {
 
   // Refactor
   $i = 0;
@@ -128,7 +128,7 @@ function bootstrap_dss_islandora_dev_preprocess_hybridauth_widget(&$vars) {
  * Implements template_preprocess_html
  *
  */
-function bootstrap_dss_islandora_dev_preprocess_html(&$variables) {
+function bootstrap_lafayette_lib_dss_preprocess_html(&$variables) {
 
   drupal_add_library('system', 'effects.drop');
   drupal_add_library('system', 'effects.slide');
@@ -143,7 +143,7 @@ function template_preprocess_hybridauth_widget(&$vars, $hook) {
 }
 */
 
-function bootstrap_dss_islandora_dev_theme_registry_alter(&$registry) {
+function bootstrap_lafayette_lib_dss_theme_registry_alter(&$registry) {
 
   $registry['hybridauth_widget']['file'] = 'template';
 }
