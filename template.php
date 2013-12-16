@@ -64,7 +64,7 @@ function bootstrap_lafayette_lib_dss_preprocess_page(&$variables) {
   // The "Log In" link
   //$variables['auth_anchor'] = l(t('Log In'), '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
   /*
-  $variables['auth_anchor'] = l('<div class="auth-icon"><img src="/sites/all/themes/bootstrap_dss_islandora_dev/files/UserIcon.png" /><span>Log In</span></div>', '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
+  $variables['auth_anchor'] = l('<div class="auth-icon"><img src="/sites/all/themes/bootstrap_lafayette_lib_dss/files/UserIcon.png" /><span>Log In</span></div>', '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
 														    'data-target' => '#auth-modal',
 																								  'data-width-offset' => '10px',
 														    'data-height-offset' => '28px'),
@@ -75,7 +75,7 @@ function bootstrap_lafayette_lib_dss_preprocess_page(&$variables) {
 											      ));
   */
 
-  $variables['auth_anchor'] = '<a data-toggle="lafayette-dss-modal" data-target="#auth-modal" data-width-offset="0px" data-height-offset="30px"><div class="auth-icon"><img src="/sites/all/themes/bootstrap_dss_islandora_dev/files/UserIcon.png" /><span>Log In</span></div></a>';
+  $variables['auth_anchor'] = '<a data-toggle="lafayette-dss-modal" data-target="#auth-modal" data-width-offset="0px" data-height-offset="30px"><div class="auth-icon"><img src="/sites/all/themes/bootstrap_lafayette_lib_dss/files/UserIcon.png" /><span>Log In</span></div></a>';
 
   // The "Log Out" link
   $variables['logout_anchor'] = l(t('Log Out'), 'user/logout');
@@ -83,7 +83,7 @@ function bootstrap_lafayette_lib_dss_preprocess_page(&$variables) {
   // The "Share" link
   //$variables['share_anchor'] = l(t('Share'), '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
   /*
-  $variables['share_anchor'] = l('<div class="share-icon"><img src="/sites/all/themes/bootstrap_dss_islandora_dev/files/ShareIcon.png" /><span>Share</span></div>', '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
+  $variables['share_anchor'] = l('<div class="share-icon"><img src="/sites/all/themes/bootstrap_lafayette_lib_dss/files/ShareIcon.png" /><span>Share</span></div>', '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
 									     'data-target' => '#share-modal',
 																								    'data-width-offset' => '10px',
 									     'data-height-offset' => '28px'
@@ -95,7 +95,7 @@ function bootstrap_lafayette_lib_dss_preprocess_page(&$variables) {
 						       ));
   */
 
-  $variables['share_anchor'] = '<a data-toggle="lafayette-dss-modal" data-target="#share-modal" data-width-offset="10px" data-height-offset="28px"><div class="share-icon"><img src="/sites/all/themes/bootstrap_dss_islandora_dev/files/ShareIcon.png" /><span>Share</span></div></a>';
+  $variables['share_anchor'] = '<a data-toggle="lafayette-dss-modal" data-target="#share-modal" data-width-offset="10px" data-height-offset="28px"><div class="share-icon"><img src="/sites/all/themes/bootstrap_lafayette_lib_dss/files/ShareIcon.png" /><span>Share</span></div></a>';
 
   // Render thumbnails for authenticated users
   // By default, use a glyphicon
