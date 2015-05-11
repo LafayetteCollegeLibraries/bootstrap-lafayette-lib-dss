@@ -257,15 +257,13 @@
    */
   var LafayetteDssModal = function(element, options) {
 
-      this.options = $.extend({width: 262,
-			       widthOffset: 0,
-			       heightOffset: 0
-	  }, options);
+      this.options = $.extend({ width: 262,
+			        widthOffset: 0,
+			        heightOffset: 0 }, options);
 
       // Work-around
       // Refactor
       //this.holdsFocus = false;
-
 
       // Set the handler 'click.dismiss.modal' for the specified element to LafayetteDssModal.hide()
       // This needs to support more than one hide closure
@@ -281,7 +279,7 @@
       // Refactor
       $(document).mousedown(function(e) {
 
-	      $(document).data('LafayetteDssModal', {$lastTarget: $(e.target)});
+	      $(document).data('LafayetteDssModal', {$lastTarget: $(e.target), $element: this.$element});
 	  });
 
       if (this.options) this.options.remote && this.$element.find('.modal-body').load(this.options.remote);
@@ -290,6 +288,35 @@
       this.shownWidth = parseInt(this.options.width);
       this.widthOffset = parseInt(this.options.widthOffset);
       this.heightOffset = parseInt(this.options.heightOffset);
+      this.anchorAlign = this.options.anchorAlign;
+
+      // Should not be parsing this string for the user agent
+      // Refactor
+      this.isSmartPhoneAgent = /Android.*?(?:Mobile)|iPhone|Windows Mobile/i.test(navigator.userAgent) ||
+      ($(window).width() == 320 && $(window).height == 480) || ($(window).width() == 480 && $(window).height == 320);
+  };
+
+  /**
+   * Error alert
+   *
+   */
+  LafayetteDssModal.alertError = function($element, html) {
+
+      //$('<div class="alert alert-block alert-error"><a href="#" data-dismiss="alert" class="close">×</a><h4 class="element-invisible">Error message</h4><ul>' + html + '</ul></div>')
+      $('<div class="alert alert-block alert-error">' + html + '</div>')
+      .hide()
+      .insertAfter(
+		   //$element.parents('.modal-content').children('.modal-header')
+		   $element.find('.modal-content').children('.modal-header')
+		   )
+      .show($.extend('slide', { direction: 'down' }, function() {
+					  
+		  // Render the error message and hide the message within 1.5 seconds
+		  setTimeout(function() {
+			  
+			  $(document).data('LafayetteDssModal.lastForm').parent().find('.alert').hide('slide', { direction: 'up' });
+		      }, 1500 );
+	      }));
   };
 
   /**
@@ -315,7 +342,8 @@
 	  var options = $.extend(options, { direction: 'up' });
 
 	  // Adjust the z-index in order to avoid overlapping issues
-	  that.$element.css('z-index', Math.floor( new Date().getTime() / 10000 % 2 * 1000  ));
+	  // Please note that this *must* consistently exceed 9999 in order to avoid introducing any conflicts with PDF.js core styling properties
+	  that.$element.css('z-index', Math.floor( new Date().getTime() / 10000 % 2 * 1000000 ));
 
 	  // Possible recursion
 	  var e = $.Event('show');
@@ -354,44 +382,60 @@
 	   * Append a handler for AJAX POST requests
 	   *
 	   */
-
 	  that.$element.find('form').submit(function(e) {
 
-		  e.preventDefault();
+		  // This handles cases for forms other than the Islandora Solr Advanced Search Form
+		  // @todo Refactor for a specific DOM class
+		  if($(this).attr('id') != 'islandora-dss-solr-advanced-search-form') {
 
-		  $(document).data('LafayetteDssModal.lastForm', $(this));
-		  /*
-		    $(document).data('LafayetteDssModal.lastForm.Id', $(this).attr('id'));
-		  */
+		      e.preventDefault();
 
-		  if(!$(this).find('.required').filter(function(i, e) {
+		      $(document).data('LafayetteDssModal.lastForm', $(this));
 
-			      return $(this).val() == '';
-			  }).length) {
-
-			      $.post($(this).attr('action'), $(this).serialize(), function(data, textStatus) {
-
-				      that.hide();
-				  }).fail(function(data) {
+		      // Parse the DOM for any required fields left empty
+		      var hasRequiredFields = $(this).find('.required').filter(function(i, e) {
 			      
-					  console.log('error');
-					  that.hide();
-				      });
-		  } else {
+			      return $(this).val() == '';
+			  }).length == 0;
+		      
+		      // If no such fields were found...
+		      if(hasRequiredFields) {
 
-		      $('<div class="alert alert-block alert-error"><a href="#" data-dismiss="alert" class="close">×</a><h4 class="element-invisible">Error message</h4><ul><li>Your Name field is required.</li><li>Your E-Mail Address field is required.</li><li>Subject field is required.</li><li>Message field is required.</li></ul></div>').hide().prependTo($(this).prev())
-			  //.show($.extend(options, {effect: 'slide', complete: function() {
-			  .show($.extend('drop', options, function() {
+			  $.post($(this).attr('action'), $(this).serialize(), function(data, textStatus) {
+				  
+				  // ...ensure that no errors were found in response to the form submission
+				  var $alertError = $(data).find('.alert-error');
+				  if($alertError.length > 0) {
 
-					  setTimeout(function() {
+				      // Update the CAPTCHA token
+				      var $captchaToken = $(data).find('.captcha input[name="captcha_token"]');
+				      that.$element.find('.captcha input[name="captcha_token"]').val( $captchaToken.val() );
+
+				      LafayetteDssModal.alertError( that.$element, $alertError.html() );
+				  } else {
+				  
+				      that.hide();
+				  }
+			      }).fail(function(data) {
+				      
+				      that.hide();
+				  });
+		      } else {
+			  
+			  LafayetteDssModal.alertError( that.$element, '<a href="#" data-dismiss="alert" class="close">×</a><h4 class="element-invisible">Error message</h4><ul><li>Your Name field is required.</li><li>Your E-Mail Address field is required.</li><li>Subject field is required.</li><li>Message field is required.</li></ul>');
+
+			  /*
+			  $('<div class="alert alert-block alert-error"><a href="#" data-dismiss="alert" class="close">×</a><h4 class="element-invisible">Error message</h4><ul><li>Your Name field is required.</li><li>Your E-Mail Address field is required.</li><li>Subject field is required.</li><li>Message field is required.</li></ul></div>').hide().prependTo($(this).prev())
+			      .show($.extend('slide', { direction: 'down' }, function() {
 					  
-						  //$(document).data('LafayetteDssModal.lastForm').parent().find('.alert').hide('scale');
-						  //$(document).data('LafayetteDssModal.lastForm').parent().find('.alert').hide('slide', { direction: 'up' });
-						  $(document).data('LafayetteDssModal.lastForm').parent().find('.alert').hide('drop', { direction: 'up' });
+					  // Render the error message and hide the message within 1.5 seconds
+					  setTimeout(function() {
+						  
+						  $(document).data('LafayetteDssModal.lastForm').parent().find('.alert').hide('slide', { direction: 'up' });
 					      }, 1500 );
-					  //}}));
-				  }));
-
+				      }));
+			  */
+		      }	      
 		  }
 	      });
 
@@ -399,108 +443,261 @@
 	   * Integrate with jQuery UI
 	   *
 	   */
-
-	  //that.$element.show('scale', function() {
-	  //that.$element.show('slide', function() {
-
 	  that.$element.addClass('shown');
 	  var $navbar = $('.navbar-inner');
-	  that.$element.css('top', ($target.offset().top - $target[0].offsetWidth / 4) + that.heightOffset);
-	  that.$element.css('left', ($target.offset().left - that.shownWidth + $target.width() + $target[0].offsetWidth / 4) + that.widthOffset);
+	  $(document).data('LafayetteDssModal.navbar.offset.top', $navbar.offset().top);
+
+	  if(that.anchorAlign) {
+
+	      that.$element.css('top', Math.floor( ($target.offset().top - $target[0].offsetWidth / 4) + that.heightOffset));
+
+	      if(that.isSmartPhoneAgent) {
+
+		  that.$element.css('left', 'auto');
+	      } else {
+
+		  that.$element.css('left', Math.floor( ($target.offset().left - that.shownWidth + $target.width() + $target[0].offsetWidth / 4) + that.widthOffset));
+	      }
+	  } else {
+
+	      // Ensure that the widget is always appended directly underneath the navbar
+	      that.$element.css('top', $navbar.offset().top + $navbar.height());
+	  }
 
 	  //transition ?
 	  //that.$element.one($.support.transition.end, function () { that.$element.focus().trigger('shown') }) :
 	  that.$element.focus().trigger('shown');
 
-	  //that.$element.show('drop', {direction: 'up'}, 500, function() {
-	  that.$element.show({effect: 'slide', direction: 'down', easing: 'easeInExpo', duration: 500, complete: function() {
+	  that.$element.insertAfter($('.navbar-inner'));
 
-		  //$._data($(this)[0], 'events');
+	  /**
+	   * Functionality for the contact form dialog
+	   *
+	   */
+	  if(that.$element.attr('id') == 'contact') {
 
-		  // Ensure that the modal is hidden after 3 seconds
-		  /*
-		  setTimeout(function() {
+	      that.$element.show();
 
-			  //$( "#effect:visible" ).removeAttr( "style" ).fadeOut();
-			  //that.$element.fadeOut();
-			  that.hide();
-		      }, 3000);
-		  */
+	      // Refactor into CSS (?)
+	      // Explicitly modify the classes using an invocation of window.setTimeout()
+	      window.setTimeout(function() {
 
-		  $(this).find('input.form-text:first').focus();
+		      jQuery('#contact.lafayette-dss-modal .modal-dialog').addClass('shown-faded');
+		  }, 100);
 
-		  // Hide when losing focus
-		  //$(this).focusout(function(e) {
+	      var targetElement = that.$element;
+	      $(document).data('LafayetteDssModal.' + $(targetElement).attr('id') + '.offset.top', $(targetElement).offset().top);
 
-		  /**
-		   * Work-around
-		   * This can only be set after the "hide" method has been explicitly inherited from the Twitter Modal Object
-		   * Attempting to implement this within the constructor raises an error, as hide(e) has not yet been appended
-		   * @todo Refactor
-		   *
-		   */
-		  $(this)
-		      .focusin(function(e) {
+	      $(targetElement).find('input.form-text:first').focus();
+	      $(document).data('LafayetteDssModal.focusedModal', that);
 
-			      $(document).data('LafayetteDssModal.focusedModal', that);
-			  })
-		      .off('focusout')
-		      .focusout(function(e) {
+	      // Hide when losing focus
+	      /**
+	       * Work-around
+	       * This can only be set after the "hide" method has been explicitly inherited from the Twitter Modal Object
+	       * Attempting to implement this within the constructor raises an error, as hide(e) has not yet been appended
+	       * @todo Refactor
+	       *
+	       */
+	      $(targetElement)
+		  .focusin(function(e) {
 
-			      $(document).data('LafayetteDssModal.focusedModal', null);
+			  $(document).data('LafayetteDssModal.focusedModal', that);
+		      })
+		  .off('focusout')
+		  .focusout(function(e) {
+			  
+			  var focusedModal = $(document).data('LafayetteDssModal.focusedModal');
 
-			      // Ensure that the modal is hidden after 3 seconds
-			      setTimeout(function() {
+			  if(focusedModal) {
 
-				      var focusedModal = $(document).data('LafayetteDssModal.focusedModal');
-
-				      if(focusedModal) {
-
-					  // Ensure that the last element clicked does not lie within a modal...
-					  if(!$(document).data('LafayetteDssModal').$lastTarget.is($(this)) &&
-					     !$(document).data('LafayetteDssModal').$lastTarget.parents('#' + focusedModal.$element.attr('id')).length ) {
+			      // Ensure that the last element clicked does not lie within a modal...
+			      if(typeof($(document).data('LafayetteDssModal')) == 'undefined' ||
+				 (!$(document).data('LafayetteDssModal').$lastTarget.is($(targetElement)) &&
+				  !$(document).data('LafayetteDssModal').$lastTarget.parents('#' + focusedModal.$element.attr('id')).length )) {
 					      
-					      //that.hide();
-					  }
-				      } else {
+				  /**
+				   * @todo Enable this before deployment
+				   *
+				   */
+				  that.hide();
+				  $(document).data('LafayetteDssModal.focusedModal', null);
+			      }
+			  } else {
 
-					  //that.hide();
+			      /**
+			       * @todo Enable this before deployment
+			       *
+			       */
+			      that.hide();
+			  }
+		      });
+
+	      /**
+	       * For handling when scrolling while a modal is open
+	       *
+	       */
+	      $(window).scroll(function() {
+
+		      $('.lafayette-dss-modal.shown').each(function(i,e) {
+
+			      //var offsetTop = $(document).data('LafayetteDssModal.offset.top');
+			      var offsetTop = $(document).data('LafayetteDssModal.' + $(e).attr('id') + '.offset.top');
+			      var navbarOffsetTop = $('.navbar-inner').offset().top;
+			      
+			      // If the browser is at the top of the page...
+			      if(!$(document).data('LafayetteDssModal.navbar.offset.top') || $(window).scrollTop() == 0) {
+
+				  $(document).data('LafayetteDssModal.navbar.offset.top', navbarOffsetTop);
+
+				  if($(window).scrollTop() == 0) {
+
+				      if($(document).height() - $(e).scrollTop() - $(e).height()) {
+
+					  $(e).css('top', offsetTop);
 				      }
-				  }, 3000);
+				  }
+			      }
+
+			      // If the navbar has yet to be affixed...
+			      if($(window).scrollTop() < navbarOffsetTop) {
+
+				  if(($(document).height() - $(document).scrollTop()) > $(e).height()) {
+
+				      // ...ensure that the dialog is adjusted as the user scrolls.
+				      $(e).css('top', offsetTop );
+				  }
+			      }
+			      
+			      var $navbar = $('.navbar-inner.affix');
+
+			      // If the navbar has been affixed and the user hasn't reached the bottom of the page...
+			      if($navbar.length > 0 && ($(document).height() - $(document).scrollTop()) > $(e).height()) {
+
+				  /**
+				   * This relates to DSSSM-517
+				   *
+				   */
+				  $(e).addClass('affixed');
+
+				  // Offset from the top + the number of pixels between the scrollbar and the top of the page
+				  //$(e).css('top', offsetTop + $(window).scrollTop());
+				  
+				  $(e).css('top', $(e).css('top') + $(window).scrollTop());
+
+				  // More pixels need to be subtracted
+				  //$(e).css('top', offsetTop + $(window).scrollTop() - $(document).data('LafayetteDssModal.navbar.offset.top') );
+			      } else {
+
+				  $(e).removeClass('affixed');
+			      }
 			  });
-		  //});
-		  }});
+		  });
+	  } else {
+
+	      /**
+	       * Functionality for the advanced search, share, and authentication dialogs
+	       *
+	       */
+	      that.$element.show({ effect: 'slide', direction: 'up', duration: 500, complete: function() {
+
+			  var targetElement = that.$element;
+
+			  $(document).data('LafayetteDssModal.' + $(this).attr('id') + '.offset.top', $(this).offset().top);
+
+			  /**
+			   * Ensure that the initial term field within the advanced search form always receives focus
+			   * @todo Refactor
+			   *
+			   */
+			  if( $(this).attr('id') == 'advanced-search-modal') {
+
+			      $(this).find('input.form-text:first').focus();
+			  } else {
+
+			      $(this).focus();
+			  }
+
+			  $(document).data('LafayetteDssModal.focusedModal', that);
+
+			  /**
+			   * Work-around
+			   * This can only be set after the "hide" method has been explicitly inherited from the Twitter Modal Object
+			   * Attempting to implement this within the constructor raises an error, as hide(e) has not yet been appended
+			   * @todo Refactor
+			   *
+			   */
+			  $(this).focusin(function(e) {
+
+				  $(document).data('LafayetteDssModal.focusedModal', that);
+			      })
+			  .off('focusout')
+			  .focusout(function(e) {
+
+				  var focusedModal = $(document).data('LafayetteDssModal.focusedModal');
+
+				  if(focusedModal) {
+
+				      // Ensure that the last element clicked does not lie within a modal...
+				      if(!$(document).data('LafayetteDssModal').$lastTarget.is($(this)) &&
+					 ////if(!$(document).data('LafayetteDssModal').$lastTarget.is($(targetElement)) &&
+					 !$(document).data('LafayetteDssModal').$lastTarget.parents('#' + focusedModal.$element.attr('id')).length ) {
+					  
+					  that.hide();
+				      }
+				  } else {
+
+				      that.hide();
+				  }
+			      });
+
+			  /**
+			   * For handling when scrolling while a modal is open
+			   *
+			   */
+			  $(window).scroll(function() {
+
+				  $('.lafayette-dss-modal.shown').each(function(i, dialogElement) {
+
+					  var dialogOffsetTop = $(document).data('LafayetteDssModal.' + $(dialogElement).attr('id') + '.offset.top');
+					  var navbarOffsetTop = $(document).data('LafayetteDssModal.navbar.offset.top');
+					  var $navbar = $('.navbar-inner');
+
+					  if(typeof(navbarOffsetTop) === 'undefined') {
+
+					      throw 'The offset of the navbar from the top of the Document was not initialized';
+					  }
+
+					  // Handling for scrolling to the top of the window
+					  if($(document).scrollTop() == 0) {
+						  
+					      $(dialogElement).css('top', $navbar.offset().top + that.heightOffset);
+					  } else {
+
+					      if($navbar.hasClass('affix') && ($(document).height() - $(document).scrollTop()) > $(dialogElement).height()) {
+
+						  $(dialogElement).addClass('affixed');
+
+						  $(dialogElement).css('top', dialogOffsetTop + $(window).scrollTop() - $(document).data('LafayetteDssModal.navbar.offset.top') );
+					      } else {
+
+						  $(dialogElement).removeClass('affixed');
+					      }
+					  }
+				      });
+			      });
+		      }});
+	  }
 
 	  that.$element.addClass('shown');
 
-	  //jQuery('.navbar-inner.affix-top').offset().top + jQuery('.navbar-inner.affix-top').height()
 	  // Ensure that the widget is always appended directly underneath the navbar
-
 	  var $navbar = $('.navbar-inner');
-	  //that.$element.css('top', $navbar.offset().top + $navbar.height());
-	  //that.$element.css('left', $target.offset().left - 262 + $target.width());
-
-	  //that.$element.css('top', $target.offset().top - $target[0].offsetWidth / 4);
-	  //that.$element.css('left', $target.offset().left - 262 + $target.width() + $target[0].offsetWidth / 4);
-
-	  //$(document).data('LafayetteDssModal').$lastTarget.offset().top
 
 	  if(transition) {
 
 	      that.$element[0].offsetWidth; // force reflow
 	  }
-
-	  // Introduces problems related to recursion
-	  /*
-	  that.enforceFocus();
-	  */
-	  /*
-	  transition ?
-	  that.$element.one($.support.transition.end, function () { that.$element.focus().trigger('shown') }) :
-	  that.$element.focus().trigger('shown');
-	  */
-
-	      
       },
 
       /**
@@ -541,6 +738,12 @@
 	  this.$element
           .removeClass('in')
           .attr('aria-hidden', true);
+
+	  // Hide any nested popover widgets
+	  this.$element.find('[data-toggle="popover"]').each(function(i,e) {
+
+		  $(e).popover('hide');
+	      });
 
 	  //$.support.transition && this.$element.hasClass('fade') ? this.hideWithTransition() : this.hideModal();
 	  //this.hideWithTransition();
@@ -586,10 +789,24 @@
 	  var options = $.extend(options, { direction: 'up' });
 
 	  //this.$element.hide('scale');
+	  //this.$element.hide($.extend(options, {effect: 'slide'}));
+
+	  //this.$element.hide('drop', options);
+
 	  //this.$element.hide('slide', options);
-	  //this.$element.hide($.extend(options, {effect: 'slide'}));
-	  //this.$element.hide($.extend(options, {effect: 'slide'}));
-	  this.$element.hide('drop', options);
+	  //that.$element.removeClass('shown').hide();
+
+	  if(that.$element.attr('id') == 'contact') {
+
+	      jQuery('#contact.lafayette-dss-modal .modal-dialog').removeClass('shown-faded');
+	      window.setTimeout(function() {
+
+		      that.$element.hide();
+		  }, 100);
+	  } else {
+
+	      this.$element.hide($.extend(options, { effect: 'slide' }));
+	  }
 
 	  this.backdrop(function () {
 
@@ -636,7 +853,8 @@
       backdrop: true,
       keyboard: true,
       show: true,
-      width: 262
+      width: 262,
+      anchorAlign: true
   };
 
   $.fn.lafayetteDssModal.Constructor = LafayetteDssModal;
@@ -660,17 +878,22 @@
 	  var $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))); //strip for ie7
 	  var option  = $target.data('modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data());
 
+	  // Refactor
 	  var width = $this.attr('data-width');
 	  var widthOffset = $this.attr('data-width-offset');
 	  var heightOffset = $this.attr('data-height-offset');
-	  // Refactor
-	  //if(width) {
 
-	      option = $.extend(option, { 'width': width,
-					  'width-offset': widthOffset,
-					  'height-offset': heightOffset
-		  });
-	      //}
+	  var anchorAlign = true;
+	  if( $this.attr('data-anchor-align')) {
+
+	      anchorAlign = $this.attr('data-anchor-align').toLowerCase() == 'true';
+	  }
+
+	  option = $.extend(option, { 'width': width,
+				      'width-offset': widthOffset,
+				      'height-offset': heightOffset,
+				      'anchorAlign': anchorAlign,
+	      });
 
 	  $target.lafayetteDssModal(option, this);
       });
