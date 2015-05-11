@@ -1,14 +1,14 @@
-name = The Islandora Development Bootstrap Sub-theme
+name = The Digital Scholarship Services base theme
 description = A Bootstrap Sub-theme.
 core = 7.x
 base theme = bootstrap
 
 ; For testing (similar syntax for modules)
-files[] = tests/bootstrap_dss_islandora_dev.test
+; files[] = tests/bootstrap_dss_islandora_dev.test
 
 scripts[] = 'js/bootstrap_helper.js'
 scripts[] = 'js/advanced_search_modal.js'
-scripts[] = 'js/widget.js'
+scripts[] = 'js/sharethis_helper.js'
 
 ; This must be specified for unit testing!
 testing_api = 2.x

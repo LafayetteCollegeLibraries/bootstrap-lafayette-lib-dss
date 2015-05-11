@@ -266,6 +266,7 @@
       // Refactor
       //this.holdsFocus = false;
 
+
       // Set the handler 'click.dismiss.modal' for the specified element to LafayetteDssModal.hide()
       // This needs to support more than one hide closure
       this.$element = $(element);
@@ -280,7 +281,7 @@
       // Refactor
       $(document).mousedown(function(e) {
 
-	      $(document).data('LafayetteDssModal', {$lastTarget: $(e.target), $element: this.$element});
+	      $(document).data('LafayetteDssModal', {$lastTarget: $(e.target)});
 	  });
 
       if (this.options) this.options.remote && this.$element.find('.modal-body').load(this.options.remote);
@@ -289,7 +290,6 @@
       this.shownWidth = parseInt(this.options.width);
       this.widthOffset = parseInt(this.options.widthOffset);
       this.heightOffset = parseInt(this.options.heightOffset);
-      this.anchorAlign = this.options.anchorAlign;
   };
 
   /**
@@ -380,14 +380,14 @@
 		  } else {
 
 		      $('<div class="alert alert-block alert-error"><a href="#" data-dismiss="alert" class="close">×</a><h4 class="element-invisible">Error message</h4><ul><li>Your Name field is required.</li><li>Your E-Mail Address field is required.</li><li>Subject field is required.</li><li>Message field is required.</li></ul></div>').hide().prependTo($(this).prev())
-			  .show($.extend('slide', { direction: 'down' }, function() {
-			  //.show($.extend('drop', options, function() {
+			  //.show($.extend(options, {effect: 'slide', complete: function() {
+			  .show($.extend('drop', options, function() {
 
 					  setTimeout(function() {
 					  
 						  //$(document).data('LafayetteDssModal.lastForm').parent().find('.alert').hide('scale');
-						  $(document).data('LafayetteDssModal.lastForm').parent().find('.alert').hide('slide', { direction: 'up' });
-						  //$(document).data('LafayetteDssModal.lastForm').parent().find('.alert').hide('drop', { direction: 'up' });
+						  //$(document).data('LafayetteDssModal.lastForm').parent().find('.alert').hide('slide', { direction: 'up' });
+						  $(document).data('LafayetteDssModal.lastForm').parent().find('.alert').hide('drop', { direction: 'up' });
 					      }, 1500 );
 					  //}}));
 				  }));
@@ -405,34 +405,15 @@
 
 	  that.$element.addClass('shown');
 	  var $navbar = $('.navbar-inner');
-	  $(document).data('LafayetteDssModal.navbar.offset.top', $navbar.offset().top);
-
-	  if(that.anchorAlign) {
-
-	      /*
-	      that.$element.css('top', ($target.offset().top - $target[0].offsetWidth / 4) + that.heightOffset);
-	      that.$element.css('left', ($target.offset().left - that.shownWidth + $target.width() + $target[0].offsetWidth / 4) + that.widthOffset);
-	      */
-
-	      that.$element.css('top', Math.floor( ($target.offset().top - $target[0].offsetWidth / 4) + that.heightOffset));
-	      that.$element.css('left', Math.floor( ($target.offset().left - that.shownWidth + $target.width() + $target[0].offsetWidth / 4) + that.widthOffset));
-	  } else {
-
-	      // Ensure that the widget is always appended directly underneath the navbar
-
-	      //var $navbar = $('.navbar-inner');
-	      that.$element.css('top', $navbar.offset().top + $navbar.height());
-	      //that.$element.css('left', 0);
-	      //that.$element.css('margin-left', '33.3%');
-
-	  }
+	  that.$element.css('top', ($target.offset().top - $target[0].offsetWidth / 4) + that.heightOffset);
+	  that.$element.css('left', ($target.offset().left - that.shownWidth + $target.width() + $target[0].offsetWidth / 4) + that.widthOffset);
 
 	  //transition ?
 	  //that.$element.one($.support.transition.end, function () { that.$element.focus().trigger('shown') }) :
 	  that.$element.focus().trigger('shown');
 
 	  //that.$element.show('drop', {direction: 'up'}, 500, function() {
-	  that.$element.show({effect: 'slide', direction: 'up', duration: 500, complete: function() {
+	  that.$element.show({effect: 'slide', direction: 'down', easing: 'easeInExpo', duration: 500, complete: function() {
 
 		  //$._data($(this)[0], 'events');
 
@@ -445,9 +426,6 @@
 			  that.hide();
 		      }, 3000);
 		  */
-
-	          //$(document).data('LafayetteDssModal.offset.top', $(this).offset().top);
-	          $(document).data('LafayetteDssModal.' + $(this).attr('id') + '.offset.top', $(this).offset().top);
 
 		  $(this).find('input.form-text:first').focus();
 
@@ -490,53 +468,6 @@
 				      }
 				  }, 3000);
 			  });
-
-		  /**
-		   * For handling when scrolling while a modal is open
-		   *
-		   */
-		  $(window).scroll(function() {
-
-			  $('.lafayette-dss-modal.shown').each(function(i,e) {
-
-			      //var offsetTop = $(document).data('LafayetteDssModal.offset.top');
-			      var offsetTop = $(document).data('LafayetteDssModal.' + $(e).attr('id') + '.offset.top');
-
-			      var navbarOffsetTop = $('.navbar-inner').offset().top;
-			      if(! $(document).data('LafayetteDssModal.navbar.offset.top') || $(window).scrollTop() == 0) {
-
-				  $(document).data('LafayetteDssModal.navbar.offset.top', navbarOffsetTop);
-
-				  if( $(window).scrollTop() == 0 ) {
-				  //if( $('.navbar-inner.affix').length == 0 ) {
-
-				      $(e).css('top', offsetTop );
-				  }
-			      }
-
-			      if($(window).scrollTop() < navbarOffsetTop) {
-
-				  $(e).css('top', offsetTop );
-			      }
-
-			      var $navbar = $('.navbar-inner.affix');
-
-			      if($navbar.length > 0) {
-
-				  //$(e).css('top', $(e).offset().top + $(window).scrollTop());
-				  $(e).css('top', offsetTop + $(window).scrollTop() - $(document).data('LafayetteDssModal.navbar.offset.top') );
-			      }
-			  });
-
-			  /*
-			  var activeElement = $(document).data('LafayetteDssModal').$element;
-
-			  if(activeElement) {
-
-			     activeElement.css('top', activeElement.css('top') + $(window).scrollTop());
-			  }
-			  */
-		      });
 		  //});
 		  }});
 
@@ -655,10 +586,10 @@
 	  var options = $.extend(options, { direction: 'up' });
 
 	  //this.$element.hide('scale');
-	  this.$element.hide('slide', options);
+	  //this.$element.hide('slide', options);
 	  //this.$element.hide($.extend(options, {effect: 'slide'}));
 	  //this.$element.hide($.extend(options, {effect: 'slide'}));
-	  //this.$element.hide('drop', options);
+	  this.$element.hide('drop', options);
 
 	  this.backdrop(function () {
 
@@ -705,8 +636,7 @@
       backdrop: true,
       keyboard: true,
       show: true,
-      width: 262,
-      anchorAlign: true
+      width: 262
   };
 
   $.fn.lafayetteDssModal.Constructor = LafayetteDssModal;
@@ -730,22 +660,17 @@
 	  var $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))); //strip for ie7
 	  var option  = $target.data('modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data());
 
-	  // Refactor
 	  var width = $this.attr('data-width');
 	  var widthOffset = $this.attr('data-width-offset');
 	  var heightOffset = $this.attr('data-height-offset');
+	  // Refactor
+	  //if(width) {
 
-	  var anchorAlign = true;
-	  if( $this.attr('data-anchor-align')) {
-
-	      anchorAlign = $this.attr('data-anchor-align').toLowerCase() == 'true';
-	  }
-
-	  option = $.extend(option, { 'width': width,
-				      'width-offset': widthOffset,
-				      'height-offset': heightOffset,
-				      'anchorAlign': anchorAlign,
-	      });
+	      option = $.extend(option, { 'width': width,
+					  'width-offset': widthOffset,
+					  'height-offset': heightOffset
+		  });
+	      //}
 
 	  $target.lafayetteDssModal(option, this);
       });

@@ -56,50 +56,28 @@ function bootstrap_lafayette_lib_dss_preprocess_page(&$variables) {
 
   // The "Contact Us" link
   $variables['contact_anchor'] = l(t('Contact Us'), '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
-										    'data-target' => '#contact',
-										    'data-anchor-align' => 'false'),
+										    'data-target' => '#contact'),
 							      'fragment' => ' ',
 							      'external' => TRUE));
 
   // The "Log In" link
-  //$variables['auth_anchor'] = l(t('Log In'), '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
-  /*
-  $variables['auth_anchor'] = l('<div class="auth-icon"><img src="/sites/all/themes/bootstrap_lafayette_lib_dss/files/UserIcon.png" /><span>Log In</span></div>', '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
-														    'data-target' => '#auth-modal',
-																								  'data-width-offset' => '10px',
-														    'data-height-offset' => '28px'),
-											      'fragment' => ' ',
-											      //'external' => TRUE));
-											      'external' => TRUE,
-											      'html' => TRUE
-											      ));
-  */
-
-  $variables['auth_anchor'] = '<a data-toggle="lafayette-dss-modal" data-target="#auth-modal" data-width-offset="0px" data-height-offset="30px"><div class="auth-icon"><img src="/sites/all/themes/bootstrap_lafayette_lib_dss/files/UserIcon.png" /><span>Log In</span></div></a>';
+  $variables['auth_anchor'] = l(t('Log In'), '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
+									     'data-target' => '#auth-modal'),
+						       'fragment' => ' ',
+						       'external' => TRUE));
 
   // The "Log Out" link
   $variables['logout_anchor'] = l(t('Log Out'), 'user/logout');
 
   // The "Share" link
-  //$variables['share_anchor'] = l(t('Share'), '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
-  /*
-  $variables['share_anchor'] = l('<div class="share-icon"><img src="/sites/all/themes/bootstrap_lafayette_lib_dss/files/ShareIcon.png" /><span>Share</span></div>', '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
-									     'data-target' => '#share-modal',
-																								    'data-width-offset' => '10px',
-									     'data-height-offset' => '28px'
-									     ),
+  $variables['share_anchor'] = l(t('Share'), '', array('attributes' => array('data-toggle' => 'lafayette-dss-modal',
+									     'data-target' => '#share-modal'),
 						       'fragment' => ' ',
-						       //'external' => TRUE));
-						       'external' => TRUE,
-						       'html' => TRUE
-						       ));
-  */
-
-  $variables['share_anchor'] = '<a data-toggle="lafayette-dss-modal" data-target="#share-modal" data-width-offset="10px" data-height-offset="28px"><div class="share-icon"><img src="/sites/all/themes/bootstrap_lafayette_lib_dss/files/ShareIcon.png" /><span>Share</span></div></a>';
+						       'external' => TRUE));
 
   // Render thumbnails for authenticated users
   // By default, use a glyphicon
-  $variables['user_picture'] = '<span class="button-auth-icon"></span>';
+  $variables['user_picture'] = '<span class="icon-large icon-user"></span>';
 
   if(user_is_logged_in()) {
 
