@@ -4,6 +4,46 @@
    *
    */
 
+#islandora-solr-simple-search-form div a, #auth-control-container > a, #share-control-container > a {
+
+    cursor: pointer;
+}
+
+#contact.lafayette-dss-modal .modal-dialog {
+
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+
+    opacity: 0.1;
+}
+
+#contact.lafayette-dss-modal .modal-dialog.shown-faded {
+
+    /*
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    */
+
+    opacity: 1.0;
+}
+
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) {
+
+    div#advanced-search-modal.shown {
+	
+	left: inherit;
+	margin: auto;
+    }
+}
+
 div#advanced-search-modal.shown {
 
     top: 152px;
@@ -89,9 +129,35 @@ div#contact.shown div.modal-dialog div.modal-content div.modal-body section#bloc
     max-height: none;
 }
 
+#contact {
+
+    height: calc(100% - 197px);
+}
+
+#contact.affixed {
+
+    height:calc(100% - 55px);
+}
+
+/**
+ * Bootstrap Popover widgets
+ *
+ */
+
 .popover.bottom .arrow {
 
     left: 86%;
+}
+
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) {
+
+    .popover.bottom .arrow {
+
+	left: 50%;
+	z-index: 20000;
+    }
 }
 
 .close {
@@ -110,4 +176,29 @@ div#contact.shown div.modal-dialog div.modal-content div.modal-body section#bloc
     color: #005580;
     text-decoration: underline;
     opacity: 1;
+}
+
+body div.popover {
+
+    z-index: 500000;
+}
+
+form#islandora-dss-solr-advanced-search-form div div#islandora-solr-advanced-terms button.islandora-solr-search-add.raised {
+
+    margin-top: -40px;
+    
+}
+
+#search-modal-help.raised {
+
+    margin-top: -30px;
+}
+
+.modal-contact-body.loading {
+
+    background-color: white;
+    background-image: url("../files/loader_65_65.gif");
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 128px;
 }
